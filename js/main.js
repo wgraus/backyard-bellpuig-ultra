@@ -278,19 +278,19 @@
     const midLatRad = ((minLat + maxLat) / 2) * (Math.PI / 180);
     const kx = Math.cos(midLatRad);
     const rawW = (maxLon - minLon) * kx;
-    const rawH = maxLat - minLat;
 
+    const Y_SQUASH = 0.7;
     const VB_W = 1000;
     const PAD = 46;
     const innerW = VB_W - PAD * 2;
     const scale = innerW / rawW;
-    const VB_H = Math.round(rawH * scale + PAD * 2);
+    const VB_H = Math.round((maxLat - minLat) * scale * Y_SQUASH + PAD * 2);
 
     trackSvg.setAttribute("viewBox", "0 0 " + VB_W + " " + VB_H);
 
     const project = ([lon, lat]) => [
       PAD + (lon - minLon) * kx * scale,
-      VB_H - PAD - (lat - minLat) * scale
+      VB_H - PAD - (lat - minLat) * scale * Y_SQUASH
     ];
 
     let d = "";
@@ -340,6 +340,61 @@
       window.addEventListener("resize", updateTrack, { passive: true });
       updateTrack();
     }
+  }
+
+  /* ---------- Gallery lightbox ---------- */
+
+  const lightbox = document.getElementById("lightbox");
+  const gallery = document.getElementById("gallery");
+
+  if (lightbox && gallery) {
+    const items = Array.from(gallery.querySelectorAll(".gallery__item"));
+    const lbImg = document.getElementById("lightboxImg");
+    const lbCaption = document.getElementById("lightboxCaption");
+    const lbClose = document.getElementById("lightboxClose");
+    const lbPrev = document.getElementById("lightboxPrev");
+    const lbNext = document.getElementById("lightboxNext");
+    let current = 0;
+    let lastFocus = null;
+
+    const show = (i) => {
+      current = (i + items.length) % items.length;
+      const img = items[current].querySelector("img");
+      if (!img) return;
+      lbImg.src = img.dataset.full || img.src;
+      lbImg.alt = img.alt;
+      lbCaption.textContent = img.alt;
+    };
+
+    const openLightbox = (i) => {
+      lastFocus = document.activeElement;
+      show(i);
+      lightbox.hidden = false;
+      document.body.style.overflow = "hidden";
+      lbClose.focus();
+    };
+
+    const closeLightbox = () => {
+      lightbox.hidden = true;
+      document.body.style.overflow = "";
+      if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+    };
+
+    items.forEach((item, i) => item.addEventListener("click", () => openLightbox(i)));
+    lbClose.addEventListener("click", closeLightbox);
+    lbPrev.addEventListener("click", () => show(current - 1));
+    lbNext.addEventListener("click", () => show(current + 1));
+
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (lightbox.hidden) return;
+      if (e.key === "Escape") closeLightbox();
+      else if (e.key === "ArrowLeft") show(current - 1);
+      else if (e.key === "ArrowRight") show(current + 1);
+    });
   }
 
   /* ---------- Footer year ---------- */
