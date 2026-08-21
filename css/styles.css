@@ -745,6 +745,54 @@ a {
   color: var(--ink-85);
 }
 
+/* ---------- Espaseta run game ---------- */
+
+.game {
+  margin: 0 auto 2.2rem;
+  padding: 0.9rem 0.9rem 0.5rem;
+  background: rgba(53, 70, 67, 0.55);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  text-align: left;
+}
+
+.game__hud {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.05em;
+  color: var(--ink-85);
+}
+
+.game__score {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.game__canvas {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.game__hint {
+  margin: 0.45rem 0 0.3rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-85);
+  transition: opacity 0.4s ease;
+}
+
+.game.is-playing .game__hint {
+  opacity: 0.35;
+}
+
 /* ---------- Contact ---------- */
 
 .contact__logo {
