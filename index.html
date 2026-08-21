@@ -186,7 +186,11 @@
           <p class="eyebrow reveal">04 // els espasetes</p>
           <h2 class="section__title reveal" id="espasetes-title">Els espasetes de Bellpuig</h2>
         </div>
-        <div class="story">
+        <div class="espasetes-row">
+          <img class="espasetes-sword reveal" src="images/espasa.png"
+            alt="Il·lustració minimalista d'una espasa, símbol dels regidors de Bellpuig" width="65" height="488"
+            loading="lazy" data-parallax="0.05">
+          <div class="story">
           <p class="reveal">Al llibre de Joan Amades <strong>Folklore de Catalunya-Rondalles</strong> s'explica que, per
             un vell privilegi concedit pel duc de Cardona, els regidors de Bellpuig tenien dret a portar espasa. Aquesta
             distinció creien que els donava un poder gran i l'exhibició de la mateixa els feia sentir cofois de la seva
@@ -198,6 +202,7 @@
             més forta que mai, i en lloc d'aturar-se se'ls emportà riu avall.</p>
           <p class="reveal">A Bellpuig, un gegantó del seguici popular porta el nom d'<strong>Espaseta</strong>,
             recordant aquesta història.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -298,18 +303,20 @@
 
     <section class="section section--alt" id="contacte" aria-labelledby="contacte-title">
       <span class="section__ghost" data-parallax="0.12" aria-hidden="true">06</span>
+      <div class="container">
+        <div class="game reveal" id="game">
+          <div class="game__hud">
+            <span class="game__laps" id="gameLaps">Volta 1</span>
+            <span class="game__best" id="gameBest">Rècord: 0 m</span>
+            <span class="game__score" id="gameScore">00000 m</span>
+          </div>
+          <canvas class="game__canvas" id="gameCanvas" width="800" height="170"
+            aria-label="Minijoc de l'Espaseta: corre i salta les espases i les rubinades amb la barra espaiadora o tocant la pantalla"></canvas>
+          <p class="game__hint" id="gameHint">Espai / toc per començar · cada volta són 6.706 m</p>
+        </div>
+      </div>
       <div class="container container--narrow">
         <div class="section__head section__head--center">
-          <div class="game reveal" id="game">
-            <div class="game__hud">
-              <span class="game__laps" id="gameLaps">Volta 1</span>
-              <span class="game__best" id="gameBest">Rècord: 0 m</span>
-              <span class="game__score" id="gameScore">00000 m</span>
-            </div>
-            <canvas class="game__canvas" id="gameCanvas" width="800" height="170"
-              aria-label="Minijoc de l'Espaseta: corre i salta les espases i les rubinades amb la barra espaiadora o tocant la pantalla"></canvas>
-            <p class="game__hint" id="gameHint">Espai / toc per començar · cada volta són 6.706 m</p>
-          </div>
           <img class="contact__logo reveal" src="images/footer.png" alt="Logotip de L'Espaseta Backyard Ultra Bellpuig"
             width="1088" height="572">
           <p class="eyebrow reveal">06 // contacte</p>

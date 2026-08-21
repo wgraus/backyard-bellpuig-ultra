@@ -453,6 +453,30 @@ a {
   white-space: nowrap;
 }
 
+.espasetes-row {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(0.75rem, 2vw, 1.4rem);
+  align-items: center;
+}
+
+.espasetes-sword {
+  height: clamp(240px, 32vw, 380px);
+  width: auto;
+  justify-self: center;
+  filter: drop-shadow(0 12px 26px rgba(0, 0, 0, 0.28));
+}
+
+@media (max-width: 720px) {
+  .espasetes-row {
+    grid-template-columns: 1fr;
+  }
+
+  .espasetes-sword {
+    display: none;
+  }
+}
+
 .row {
   position: relative;
   display: grid;
