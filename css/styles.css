@@ -234,6 +234,27 @@ a {
   pointer-events: none;
 }
 
+.hero__track {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  width: min(88vw, 860px);
+  height: auto;
+  opacity: 0.22;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.hero__track path {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .hero__content {
   text-align: center;
   will-change: transform, opacity;

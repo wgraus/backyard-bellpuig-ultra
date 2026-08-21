@@ -78,7 +78,7 @@
     revealEls.forEach((el) => revealObserver.observe(el));
   }
 
-  /* ---------- Constellation ---------- */
+  /* ---------- Rural dust ---------- */
 
   const canvas = document.getElementById("constellation");
   const hero = document.getElementById("inici");
@@ -91,8 +91,37 @@
     let particles = [];
     let running = false;
     let rafId = null;
+    let time = 0;
+    let gustCooldown = 180 + Math.random() * 300;
+    let gustTime = 0;
+    let gustTotal = 1;
+    let gustPower = 0;
     const mouse = { x: -9999, y: -9999 };
-    const LINK_DIST = 120;
+
+    const sprite = document.createElement("canvas");
+    sprite.width = 64;
+    sprite.height = 64;
+    const spriteCtx = sprite.getContext("2d");
+    const grad = spriteCtx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    grad.addColorStop(0, "rgba(218, 214, 199, 1)");
+    grad.addColorStop(0.35, "rgba(218, 214, 199, 0.5)");
+    grad.addColorStop(1, "rgba(218, 214, 199, 0)");
+    spriteCtx.fillStyle = grad;
+    spriteCtx.fillRect(0, 0, 64, 64);
+
+    const makeParticle = (near) => ({
+      near,
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: near ? Math.random() * 2.2 + 1.5 : Math.random() * 1.1 + 0.4,
+      alpha: near ? Math.random() * 0.3 + 0.3 : Math.random() * 0.22 + 0.08,
+      vx: near ? Math.random() * 0.6 + 0.45 : Math.random() * 0.3 + 0.15,
+      vy: (Math.random() - 0.5) * 0.09,
+      phase: Math.random() * Math.PI * 2,
+      wobbleAmp: Math.random() * 16 + 6,
+      wobbleSpeed: Math.random() * 0.012 + 0.005,
+      twinkleSpeed: Math.random() * 0.02 + 0.008
+    });
 
     const resize = () => {
       dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -102,61 +131,56 @@
       canvas.height = Math.round(height * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      const target = Math.min(110, Math.round((width * height) / 16000));
-      particles = Array.from({ length: target }, () => ({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.35,
-        vy: (Math.random() - 0.5) * 0.35,
-        r: Math.random() * 1.6 + 0.7
-      }));
+      const target = Math.min(320, Math.round((width * height) / 4800));
+      particles = [];
+      for (let i = 0; i < target; i++) {
+        particles.push(makeParticle(Math.random() < 0.25));
+      }
     };
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
+      time += 1;
 
-      for (const p of particles) {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < -20) p.x = width + 20;
-        if (p.x > width + 20) p.x = -20;
-        if (p.y < -20) p.y = height + 20;
-        if (p.y > height + 20) p.y = -20;
-
-        const dxm = mouse.x - p.x;
-        const dym = mouse.y - p.y;
-        const dm = Math.hypot(dxm, dym);
-        if (dm < 140 && dm > 0.001) {
-          p.x += (dxm / dm) * 0.25;
-          p.y += (dym / dm) * 0.25;
-        }
-      }
-
-      ctx.lineWidth = 1;
-      for (let i = 0; i < particles.length; i++) {
-        const a = particles[i];
-        for (let j = i + 1; j < particles.length; j++) {
-          const b = particles[j];
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const d2 = dx * dx + dy * dy;
-          if (d2 < LINK_DIST * LINK_DIST) {
-            const alpha = (1 - Math.sqrt(d2) / LINK_DIST) * 0.28;
-            ctx.strokeStyle = "rgba(218, 214, 199," + alpha.toFixed(3) + ")";
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-        }
+      if (gustTime > 0) {
+        gustTime--;
+        gustPower = Math.sin((1 - gustTime / gustTotal) * Math.PI);
+      } else if (--gustCooldown <= 0) {
+        gustTotal = 90 + Math.random() * 90;
+        gustTime = gustTotal;
+        gustCooldown = 300 + Math.random() * 480;
       }
 
       for (const p of particles) {
-        ctx.fillStyle = "rgba(218, 214, 199, 0.75)";
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fill();
+        p.phase += p.wobbleSpeed * (1 + gustPower * 1.5);
+        p.x += p.vx * (1 + gustPower * (p.near ? 2.4 : 1.7));
+        p.y += p.vy + (Math.random() - 0.5) * gustPower * 0.5;
+
+        const dxm = p.x - mouse.x;
+        const dym = p.y - mouse.y;
+        const dm2 = dxm * dxm + dym * dym;
+        if (dm2 < 16900 && dm2 > 0.01) {
+          const dm = Math.sqrt(dm2);
+          const push = ((130 - dm) / 130) * 0.9;
+          p.x += (dxm / dm) * push;
+          p.y += (dym / dm) * push;
+        }
+
+        if (p.x < -30) p.x = width + 30;
+        if (p.x > width + 30) p.x = -30;
+        if (p.y < -30) p.y = height + 30;
+        if (p.y > height + 30) p.y = -30;
+
+        const wx = Math.cos(p.phase * 1.3) * p.wobbleAmp;
+        const wy = Math.sin(p.phase) * p.wobbleAmp * 0.5;
+        const twinkle = 0.72 + 0.28 * Math.sin(time * p.twinkleSpeed + p.phase);
+        const size = p.r * 6;
+
+        ctx.globalAlpha = p.alpha * twinkle;
+        ctx.drawImage(sprite, p.x + wx - size / 2, p.y + wy - size / 2, size, size);
       }
+
+      ctx.globalAlpha = 1;
     };
 
     const loop = () => {
@@ -300,6 +324,9 @@
     }
     d += "Z";
     trackPath.setAttribute("d", d);
+
+    const heroTrackPath = document.getElementById("heroTrackPath");
+    if (heroTrackPath) heroTrackPath.setAttribute("d", d);
 
     const [sx, sy] = project(pts[0]);
     trackMarker.setAttribute("transform", "translate(" + sx.toFixed(1) + " " + sy.toFixed(1) + ")");
