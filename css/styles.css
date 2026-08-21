@@ -490,6 +490,19 @@ a {
   letter-spacing: 0.05em;
 }
 
+.photo-frame--filled {
+  min-height: 0;
+  padding: 0;
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.photo-frame--filled img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 .photo-frame--wide {
   margin-top: clamp(2rem, 5vw, 3.2rem);
   min-height: 260px;
