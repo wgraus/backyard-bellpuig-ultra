@@ -426,6 +426,33 @@ a {
   color: var(--ink-85);
 }
 
+.story {
+  max-width: 68ch;
+  margin-inline: auto;
+  padding-left: clamp(1.2rem, 4vw, 2.2rem);
+  border-left: 2px solid rgba(218, 214, 199, 0.35);
+}
+
+.story p {
+  margin: 0;
+  color: var(--ink-85);
+  font-size: 1.075rem;
+}
+
+.story p + p {
+  margin-top: 1.15rem;
+}
+
+.story strong {
+  color: var(--ink);
+}
+
+.story__cry {
+  font-family: var(--font-mono);
+  color: var(--accent);
+  white-space: nowrap;
+}
+
 .row {
   position: relative;
   display: grid;
@@ -721,11 +748,11 @@ a {
 /* ---------- Contact ---------- */
 
 .contact__logo {
-  width: 96px;
-  height: 96px;
+  width: min(340px, 78%);
+  height: auto;
   object-fit: contain;
-  margin: 0 auto 1.4rem;
-  filter: drop-shadow(0 10px 26px rgba(0, 0, 0, 0.3));
+  margin: 0 auto 1.6rem;
+  filter: drop-shadow(0 14px 34px rgba(0, 0, 0, 0.35));
 }
 
 .contact__cards {
@@ -829,7 +856,7 @@ a {
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 860px) {
   .nav__toggle {
     display: flex;
   }
