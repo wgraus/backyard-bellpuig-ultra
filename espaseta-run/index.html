@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ca">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#3f534f" />
+  <title>L'Espaseta Run Bellpuig</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="estil.css" />
+</head>
+
+<body>
+  <main class="wrap">
+    <header class="marca">espaseta<b>_backyard</b> // bellpuig</header>
+
+    <h1 class="titol">
+      <span class="linia l1">L'ESPASETA</span>
+      <span class="linia l2">RUN</span>
+      <span class="linia l3">BELLPUIG</span>
+    </h1>
+    <p class="consigna">6,706 km. Una hora. Una volta més. Fins que només en quedi un.</p>
+
+    <section class="joc" id="game">
+      <div class="hud">
+        <span class="hud-item" id="gameLaps">Volta 1</span>
+        <span class="hud-item" id="gameClock">00:45</span>
+        <span class="hud-item" id="gameBell">🔔</span>
+        <span class="hud-item" id="gameScore">00000 m</span>
+        <span class="hud-item right" id="gameBest">Rècord: 0 m · 0 voltes</span>
+      </div>
+
+      <canvas id="gameCanvas"></canvas>
+
+      <p class="hint" id="gameHint">// Una hora per volta · supera la volta abans del temporitzador · 🔔</p>
+    </section>
+
+    <nav class="controls">
+      <button class="btn" id="btnStart">▶&nbsp; COMENÇAR</button>
+      <button class="btn ghost" id="btnReset">↺&nbsp; REINICIAR</button>
+    </nav>
+  </main>
+
+  <script src="espaseta-run.js"></script>
+</body>
+
+</html>

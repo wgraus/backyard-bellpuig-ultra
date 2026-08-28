@@ -43,7 +43,7 @@ body {
 }
 
 .wrap {
-  width: min(1400px, 100%);
+  width: min(760px, 100%);
 }
 
 .marca {
@@ -64,8 +64,8 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   text-align: center;
-  margin-top: 28px;
-  line-height: 0.95;
+  margin-top: 18px;
+  line-height: 0.9;
 }
 
 .linia {
@@ -73,37 +73,37 @@ body {
 }
 
 .l1 {
-  font-size: clamp(2.5rem, 8vw, 6rem);
-  letter-spacing: 0.06em;
+  font-size: clamp(1.5rem, 4.2vw, 2.8rem);
+  letter-spacing: 0.08em;
 }
 
 .l2 {
-  font-size: clamp(1.8rem, 5.6vw, 4.2rem);
+  font-size: clamp(2rem, 6.4vw, 4.6rem);
   color: transparent;
   -webkit-text-stroke: 2px var(--ink);
-  letter-spacing: 0.24em;
+  letter-spacing: 0.28em;
   text-shadow: 0 0 24px rgba(218, 214, 199, 0.25);
 }
 
 .l3 {
-  font-size: clamp(1.1rem, 3.4vw, 2.3rem);
+  font-size: clamp(0.9rem, 2.4vw, 1.5rem);
   color: var(--secondary);
-  letter-spacing: 0.5em;
-  margin-top: 6px;
+  letter-spacing: 0.44em;
+  margin-top: 4px;
 }
 
 .consigna {
   text-align: center;
   font-family: var(--font-mono);
   color: var(--ink-60);
-  margin-top: 18px;
-  font-size: 1rem;
+  margin-top: 12px;
+  font-size: 0.9rem;
 }
 
 .joc {
   position: relative;
-  margin: 36px auto 0;
-  width: min(1400px, 100%);
+  margin: 24px auto 0;
+  width: 100%;
   border: 1px solid var(--line);
   border-radius: 16px;
   overflow: hidden;
@@ -126,10 +126,20 @@ body {
   color: var(--ink-60);
 }
 
+#gameClock {
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+.pista {
+  position: relative;
+  height: 600px;
+}
+
 #gameCanvas {
   display: block;
   width: 100%;
-  height: auto;
+  height: 100%;
   touch-action: none;
 }
 
@@ -180,5 +190,11 @@ body {
 @media (prefers-reduced-motion: reduce) {
   * {
     transition: none !important;
+  }
+}
+
+@media (max-width: 520px) {
+  .pista {
+    height: 480px;
   }
 }

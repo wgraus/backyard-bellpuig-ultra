@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#3f534f" />
-  <title>L'Espaseta — Run Game</title>
+  <title>L'Espaseta — Race</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet" />
@@ -16,10 +16,10 @@
 
     <h1 class="titol">
       <span class="linia l1">L'ESPASETA</span>
-      <span class="linia l2">BACKYARD ULTRA</span>
+      <span class="linia l2">RACE</span>
       <span class="linia l3">BELLPUIG</span>
     </h1>
-    <p class="consigna">6,706 km. Una hora. Una volta més. Fins que només en quedi un.</p>
+    <p class="consigna">Tres carrils. Amunt sempre. Fes-te un lloc entre espases i rubinades.</p>
 
     <section class="joc" id="game">
       <div class="hud">
@@ -28,9 +28,11 @@
         <span class="hud-item right" id="gameBest">Rècord: 0 m</span>
       </div>
 
-      <canvas id="gameCanvas"></canvas>
+      <div class="pista" id="pista">
+        <canvas id="gameCanvas"></canvas>
+      </div>
 
-      <p class="hint" id="gameHint">// Espai o toc per saltar les espases i les rubinades</p>
+      <p class="hint" id="gameHint">// ← → o A/D per canviar de carril · Espai per començar</p>
     </section>
 
     <nav class="controls">
@@ -39,6 +41,6 @@
     </nav>
   </main>
 
-  <script src="joc.js"></script>
+  <script src="race.js"></script>
 </body>
 </html>

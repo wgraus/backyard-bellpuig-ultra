@@ -5,16 +5,20 @@
   const scoreEl = document.getElementById("gameScore");
   const lapEl = document.getElementById("gameLaps");
   const bestEl = document.getElementById("gameBest");
+  const bellEl = document.getElementById("gameBell");
+  const clockEl = document.getElementById("gameClock");
   const hintEl = document.querySelector(".hint");
   const btnStart = document.getElementById("btnStart");
   const btnReset = document.getElementById("btnReset");
 
   const INK = "#dad6c7";
   const SOFT = "#8fa89a";
+  const BG_DEEP = "#354643";
   const LAP_M = 6706;
+  const LAP_TIME = 45; // seconds of game time = the "one hour" deadline per lap
   const GAME_H = 170;
   const GROUND = GAME_H - 24;
-  const PX2M = 0.14;
+  const PX2M = 0.45;
   const GRAVITY = 2000;
   const JUMP_V = -640;
 
@@ -27,20 +31,32 @@
   let distPx = 0;
   let meters = 0;
   let laps = 0;
+  let lapClock = 0; // seconds into current lap
+  let lapM = 0; // meters into current lap
   let flash = 0;
   let spawnIn = 420;
   let obstacles = [];
   let player = { y: GROUND, vy: 0, airborne: false };
   let bestM = 0;
+  let bestVoltes = 0;
   let time2 = 0;
   let running = false;
 
   try {
     bestM = Number(localStorage.getItem("espaseta-best")) || 0;
+    bestVoltes = Number(localStorage.getItem("espaseta-voltes")) || 0;
   } catch (e) {
     bestM = 0;
+    bestVoltes = 0;
   }
-  bestEl.textContent = "Rècord: " + Math.floor(bestM) + " m";
+
+  const tickerRef = { t: 0, lastBell: 0 };
+
+  const fmtClock = (s) => {
+    const mm = Math.max(0, Math.floor(s / 60));
+    const ss = Math.max(0, Math.floor(s % 60));
+    return String(mm).padStart(2, "0") + ":" + String(ss).padStart(2, "0");
+  };
 
   const sizeGame = () => {
     gdpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -51,18 +67,29 @@
     render();
   };
 
-  const resetGame = (restartBest = true) => {
+  const lapSpeed = () => Math.min(1180, 360 + laps * 60 + 9);
+
+  const resetGame = () => {
     speed = 360;
     distPx = 0;
     meters = 0;
     laps = 0;
+    lapClock = 0;
+    lapM = 0;
     flash = 0;
     spawnIn = 420;
     obstacles = [];
     player = { y: GROUND, vy: 0, airborne: false };
+    tickerRef.t = 0;
+    tickerRef.lastBell = 0;
     lapEl.textContent = "Volta 1";
     scoreEl.textContent = "00000 m";
-    if (restartBest) bestEl.textContent = "Rècord: " + Math.floor(bestM) + " m";
+    clockEl.textContent = "00:" + String(LAP_TIME).padStart(2, "0");
+    bellEl.textContent = "🔔";
+  };
+
+  const refreshBest = () => {
+    bestEl.textContent = "Rècord: " + Math.floor(bestM) + " m · " + Math.floor(bestVoltes) + " voltes";
   };
 
   const startRun = () => {
@@ -85,37 +112,63 @@
   const endRun = () => {
     state = "over";
     const m = Math.floor(meters);
-    if (m > bestM) {
-      bestM = m;
-      try {
-        localStorage.setItem("espaseta-best", String(m));
-      } catch (e) {}
-      bestEl.textContent = "Rècord: " + m + " m";
-    }
+    if (m > bestM) bestM = m;
+    if (laps > bestVoltes) bestVoltes = laps;
+    try {
+      localStorage.setItem("espaseta-best", String(bestM));
+      localStorage.setItem("espaseta-voltes", String(bestVoltes));
+    } catch (e) {}
+    refreshBest();
   };
 
   const spawnObstacle = () => {
-    if (Math.random() < 0.55) {
-      obstacles.push({ type: "sword", x: W + 40, w: 12, h: 44 + Math.random() * 8 });
+    const r = Math.random();
+    if (r < 0.5) {
+      obstacles.push({ type: "sword", x: W + 40, w: 12, h: 44 + Math.random() * 8 + Math.min(laps, 4) * 4 });
+    } else if (r < 0.85) {
+      obstacles.push({ type: "puddle", x: W + 40, w: 48 + Math.random() * 40 + Math.min(laps, 5) * 10, h: 24 });
     } else {
-      obstacles.push({ type: "puddle", x: W + 40, w: 48 + Math.random() * 40, h: 24 });
+      obstacles.push({ type: "wall", x: W + 40, w: 14, h: 46 + Math.random() * 6 });
     }
-    spawnIn = 300 + Math.random() * 320 + speed * 0.3;
+    spawnIn = 300 + Math.random() * 320 + speed * 0.3 - Math.min(laps, 6) * 26;
   };
 
   const update = (dt) => {
     if (state !== "run") return;
-    speed = Math.min(860, speed + dt * 9);
+    const target = lapSpeed();
+    speed = Math.min(target, speed + dt * 12);
     distPx += speed * dt;
     meters += speed * dt * PX2M;
+    lapClock += dt;
+    lapM += speed * dt * PX2M;
 
-    if (meters >= (laps + 1) * LAP_M) {
-      laps++;
-      flash = 110;
-      lapEl.textContent = "Volta " + (laps + 1);
+    const lapLeft = LAP_M - lapM;
+
+    if (lapLeft > 0) {
+      scoreEl.textContent = String(Math.max(0, Math.floor(lapLeft))).padStart(5, "0") + " m";
+      clockEl.textContent = fmtClock(Math.max(0, LAP_TIME - lapClock));
+    } else {
+      scoreEl.textContent = "VOLTA OK";
+      clockEl.textContent = "00:00";
     }
 
-    scoreEl.textContent = String(Math.floor(meters)).padStart(5, "0") + " m";
+    if (lapLeft <= 0) {
+      laps++;
+      lapClock = 0;
+      lapM = 0;
+      flash = 110;
+      tickerRef.t = perfNow();
+      lapEl.textContent = "Volta " + (laps + 1);
+      if (laps > bestVoltes) {
+        try {
+          bestVoltes = laps;
+          localStorage.setItem("espaseta-voltes", String(bestVoltes));
+        } catch (e) {}
+        refreshBest();
+      }
+    } else if (lapClock >= LAP_TIME) {
+      endRun();
+    }
 
     if (player.airborne) {
       player.vy += GRAVITY * dt;
@@ -150,6 +203,15 @@
     }
 
     if (flash > 0) flash--;
+  };
+
+  const perfNow = () => performance.now();
+  const bellActive = () => {
+    if (flash <= 0) return false;
+    if (tickerRef.t === 0) return true;
+    // two distinct bell rings: immediately and shortly after
+    const e = perfNow() - tickerRef.t;
+    return (e < 160) || (e > 420 && e < 580);
   };
 
   const drawRunner = () => {
@@ -216,6 +278,19 @@
         g.beginPath();
         g.arc(cx, GROUND - o.h - 5, 3, 0, Math.PI * 2);
         g.stroke();
+      } else if (o.type === "wall") {
+        g.strokeStyle = INK;
+        g.lineWidth = 3;
+        g.beginPath();
+        g.moveTo(o.x + o.w / 2, GROUND);
+        g.lineTo(o.x + o.w / 2, GROUND - o.h);
+        g.stroke();
+        g.beginPath();
+        g.moveTo(o.x, GROUND - o.h + 4);
+        g.lineTo(o.x + o.w, GROUND - o.h + 4);
+        g.moveTo(o.x, GROUND - o.h + 12);
+        g.lineTo(o.x + o.w, GROUND - o.h + 12);
+        g.stroke();
       } else {
         g.strokeStyle = SOFT;
         g.lineWidth = 3;
@@ -250,12 +325,20 @@
     drawObstacles();
     drawRunner();
 
+    // lap progress bar at the very bottom
+    const p = Math.min(1, lapClock / LAP_TIME);
+    g.fillStyle = "rgba(218, 214, 199, 0.18)";
+    g.fillRect(0, GAME_H - 6, W, 3);
+    g.fillStyle = INK;
+    g.fillRect(0, GAME_H - 6, W * p, 3);
+
     g.font = "700 15px ui-monospace, Menlo, Consolas, monospace";
     g.textAlign = "center";
 
-    if (flash > 0 && flash % 32 < 20) {
+    if (bellActive()) {
       g.fillStyle = INK;
-      g.fillText("VOLTA " + laps + " SUPERADA", W / 2, 52);
+      g.font = "700 22px ui-monospace, Menlo, Consolas, monospace";
+      g.fillText("🔔 VOLTA " + laps + " SUPERADA", W / 2, 52);
     }
 
     if (state === "idle") {
@@ -263,16 +346,17 @@
       g.fillRect(0, 0, W, GAME_H);
       g.fillStyle = INK;
       g.font = "700 20px ui-monospace, Menlo, Consolas, monospace";
-      g.fillText("L'ESPASETA RUN GAME", W / 2, GAME_H / 2 - 10);
+      g.fillText("L'ESPASETA RUN GAME", W / 2, GAME_H / 2 - 24);
       g.font = "13px ui-monospace, Menlo, Consolas, monospace";
       g.fillStyle = SOFT;
-      g.fillText("Espai o toc per començar a córrer", W / 2, GAME_H / 2 + 16);
+      g.fillText("Una hora. Una volta més. Fins que només en quedi un.", W / 2, GAME_H / 2 - 2);
+      g.fillText("Espai o toc per començar a córrer", W / 2, GAME_H / 2 + 18);
     } else if (state === "over") {
       g.fillStyle = "rgba(53, 70, 67, 0.78)";
       g.fillRect(0, 0, W, GAME_H);
       g.fillStyle = INK;
       g.font = "700 18px ui-monospace, Menlo, Consolas, monospace";
-      g.fillText("Aturat a " + Math.floor(meters) + " m", W / 2, GAME_H / 2 - 8);
+      g.fillText("Aturat a " + Math.floor(meters) + " m · " + laps + " voltes", W / 2, GAME_H / 2 - 8);
       g.font = "13px ui-monospace, Menlo, Consolas, monospace";
       g.fillStyle = SOFT;
       g.fillText("Espai o toc per reintentar", W / 2, GAME_H / 2 + 16);
@@ -324,6 +408,7 @@
   btnReset.addEventListener("click", () => {
     stopLoop();
     resetGame();
+    refreshBest();
     state = "idle";
     render();
   });
@@ -334,5 +419,6 @@
     resizeTimer = setTimeout(sizeGame, 150);
   });
 
+  refreshBest();
   sizeGame();
 })();
