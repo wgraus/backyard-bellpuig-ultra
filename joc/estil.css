@@ -1,0 +1,184 @@
+:root {
+  --bg: #3f534f;
+  --bg-deep: #354643;
+  --secondary: #5e7969;
+  --ink: #dad6c7;
+  --ink-85: rgba(218, 214, 199, 0.85);
+  --ink-60: rgba(218, 214, 199, 0.6);
+  --line: rgba(218, 214, 199, 0.16);
+  --accent: #dad6c7;
+  --dark-on-accent: #2e3d3a;
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Code", "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  --font-display: "Oswald", "Impact", "Arial Narrow", sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+}
+
+body {
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(rgba(218, 214, 199, 0.028) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(218, 214, 199, 0.028) 1px, transparent 1px);
+  background-size: 44px 44px;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.wrap {
+  width: min(1400px, 100%);
+}
+
+.marca {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--ink-60);
+  letter-spacing: 0.02em;
+  text-align: center;
+}
+
+.marca b {
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.titol {
+  font-family: var(--font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  text-align: center;
+  margin-top: 28px;
+  line-height: 0.95;
+}
+
+.linia {
+  display: block;
+}
+
+.l1 {
+  font-size: clamp(2.5rem, 8vw, 6rem);
+  letter-spacing: 0.06em;
+}
+
+.l2 {
+  font-size: clamp(1.8rem, 5.6vw, 4.2rem);
+  color: transparent;
+  -webkit-text-stroke: 2px var(--ink);
+  letter-spacing: 0.24em;
+  text-shadow: 0 0 24px rgba(218, 214, 199, 0.25);
+}
+
+.l3 {
+  font-size: clamp(1.1rem, 3.4vw, 2.3rem);
+  color: var(--secondary);
+  letter-spacing: 0.5em;
+  margin-top: 6px;
+}
+
+.consigna {
+  text-align: center;
+  font-family: var(--font-mono);
+  color: var(--ink-60);
+  margin-top: 18px;
+  font-size: 1rem;
+}
+
+.joc {
+  position: relative;
+  margin: 36px auto 0;
+  width: min(1400px, 100%);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+
+.hud {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--line);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--ink-85);
+}
+
+.hud .right {
+  margin-left: auto;
+  color: var(--ink-60);
+}
+
+#gameCanvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: none;
+}
+
+.hint {
+  padding: 10px 18px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--ink-60);
+  border-top: 1px solid var(--line);
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 28px;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--dark-on-accent);
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 700;
+  padding: 14px 34px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
