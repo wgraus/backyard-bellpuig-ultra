@@ -723,6 +723,108 @@ a {
   translate: 0 -50%;
 }
 
+/* ---------- Converter ---------- */
+
+.converter {
+  padding: clamp(1rem, 3vw, 2rem) 0;
+}
+
+.converter__inner {
+  max-width: 640px;
+  margin-inline: auto;
+  padding: clamp(1.4rem, 3vw, 2.2rem);
+  background: rgba(53, 70, 67, 0.55);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.converter__title {
+  margin: 0 0 1.4rem;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2.6vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.converter__row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: end;
+  gap: 1rem;
+}
+
+.converter__field {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.converter__label {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-85);
+}
+
+.converter__input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--accent);
+  background: var(--bg-deep);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.converter__input:focus-visible {
+  outline: none;
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px rgba(218, 214, 199, 0.22);
+}
+
+.converter__input::-webkit-outer-spin-button,
+.converter__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.converter__input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+.converter__arrow {
+  padding-bottom: 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  color: var(--ink-60);
+}
+
+.converter__note {
+  margin: 1.2rem 0 0;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-85);
+}
+
+@media (max-width: 480px) {
+  .converter__row {
+    grid-template-columns: 1fr;
+  }
+
+  .converter__arrow {
+    display: none;
+  }
+}
+
 /* ---------- Track ---------- */
 
 .track {

@@ -370,6 +370,27 @@
     }
   }
 
+  /* ---------- Converter laps / km ---------- */
+
+  const convLaps = document.getElementById("convVoltes");
+  const convKm = document.getElementById("convKm");
+  const KM_PER_LAP = 6.706;
+  const formatNum = (v) => parseFloat(v.toFixed(3)).toString();
+
+  if (convLaps && convKm) {
+    convLaps.addEventListener("input", () => {
+      const laps = parseFloat(convLaps.value);
+      if (!isFinite(laps) || laps < 0) return;
+      convKm.value = formatNum(laps * KM_PER_LAP);
+    });
+
+    convKm.addEventListener("input", () => {
+      const km = parseFloat(convKm.value);
+      if (!isFinite(km) || km < 0) return;
+      convLaps.value = formatNum(km / KM_PER_LAP);
+    });
+  }
+
   /* ---------- Gallery lightbox ---------- */
 
   const lightbox = document.getElementById("lightbox");
